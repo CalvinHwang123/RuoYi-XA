@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.business.mapper.BizCorrectMapper">
+    
+    <resultMap type="BizCorrect" id="BizCorrectResult">
+        <result property="id"    column="id"    />
+        <result property="employeeName"    column="employee_name"    />
+        <result property="inTime"    column="in_time"    />
+        <result property="reason"    column="reason"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBizCorrectVo">
+        select id, employee_name, in_time, reason, create_by, create_time, update_by, update_time from biz_correct
+    </sql>
+
+    <select id="selectBizCorrectList" parameterType="BizCorrect" resultMap="BizCorrectResult">
+        <include refid="selectBizCorrectVo"/>
+        <where>  
+            <if test="employeeName != null  and employeeName != ''"> and employee_name like concat('%', #{employeeName}, '%')</if>
+            <if test="params.beginInTime != null and params.beginInTime != '' and params.endInTime != null and params.endInTime != ''"> and in_time between #{params.beginInTime} and #{params.endInTime}</if>
+            <if test="reason != null  and reason != ''"> and reason like concat('%', #{reason}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="selectBizCorrectById" parameterType="Long" resultMap="BizCorrectResult">
+        <include refid="selectBizCorrectVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBizCorrect" parameterType="BizCorrect" useGeneratedKeys="true" keyProperty="id">
+        insert into biz_correct
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="employeeName != null">employee_name,</if>
+            <if test="inTime != null">in_time,</if>
+            <if test="reason != null">reason,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="employeeName != null">#{employeeName},</if>
+            <if test="inTime != null">#{inTime},</if>
+            <if test="reason != null">#{reason},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBizCorrect" parameterType="BizCorrect">
+        update biz_correct
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="employeeName != null">employee_name = #{employeeName},</if>
+            <if test="inTime != null">in_time = #{inTime},</if>
+            <if test="reason != null">reason = #{reason},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBizCorrectById" parameterType="Long">
+        delete from biz_correct where id = #{id}
+    </delete>
+
+    <delete id="deleteBizCorrectByIds" parameterType="String">
+        delete from biz_correct where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>
